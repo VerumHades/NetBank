@@ -1,4 +1,6 @@
-﻿namespace NetBank;
+﻿using NetBank.Storage;
+
+namespace NetBank;
 
 class Program
 {

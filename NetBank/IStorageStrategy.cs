@@ -5,7 +5,7 @@ namespace NetBank;
 /// <summary>
 /// Defines the storage strategy for accounts and balances.
 /// </summary>
-public interface IStorageStrategyInterface
+public interface IStorageStrategy
 {
     /// <summary>
     /// Creates a number of accounts. The actual number of accounts created
@@ -13,28 +13,28 @@ public interface IStorageStrategyInterface
     /// </summary>
     /// <param name="count">The desired number of accounts to create.</param>
     /// <returns>A collection of identifiers for the created accounts.</returns>
-    Task<IEnumerable<AccountIdentifier>> CreateAccounts(int count);
+    Task<IReadOnlyList<AccountIdentifier>> CreateAccounts(int count);
 
     /// <summary>
     /// Deletes the specified accounts. Accounts that do not exist are ignored.
     /// </summary>
     /// <param name="accounts">The accounts to delete.</param>
     /// <returns>A collection of identifiers of accounts that were removed.</returns>
-    Task<IEnumerable<AccountIdentifier>> RemoveAccounts(IEnumerable<AccountIdentifier> accounts);
+    Task<IReadOnlyList<AccountIdentifier>> RemoveAccounts(IEnumerable<AccountIdentifier> accounts);
 
     /// <summary>
     /// Deposits amounts into the specified accounts. Correctness is not guaranteed.
     /// </summary>
     /// <param name="amounts">The accounts and amounts to deposit.</param>
     /// <returns>A collection of identifiers of accounts that were updated.</returns>
-    Task<IEnumerable<AccountIdentifier>> DepositAll(IEnumerable<AccountAndAmount> amounts);
+    Task<IReadOnlyList<AccountIdentifier>> DepositAll(IEnumerable<AccountAndAmount> amounts);
 
     /// <summary>
     /// Withdraws amounts from the specified accounts. Correctness is not guaranteed.
     /// </summary>
     /// <param name="amounts">The accounts and amounts to withdraw.</param>
     /// <returns>A collection of identifiers of accounts that were updated.</returns>
-    Task<IEnumerable<AccountIdentifier>> WithdrawAll(IEnumerable<AccountAndAmount> amounts);
+    Task<IReadOnlyList<AccountIdentifier>> WithdrawAll(IEnumerable<AccountAndAmount> amounts);
 
     /// <summary>
     /// Retrieves balances for the specified accounts.
@@ -42,7 +42,7 @@ public interface IStorageStrategyInterface
     /// </summary>
     /// <param name="accounts">The accounts to query.</param>
     /// <returns>A collection of accounts with their balances.</returns>
-    Task<IEnumerable<AccountAndAmount>> BalanceAll(IEnumerable<AccountIdentifier> accounts);
+    Task<IReadOnlyList<AccountAndAmount>> BalanceAll(IEnumerable<AccountIdentifier> accounts);
 
     /// <summary>
     /// Returns the total sum of all amounts across all accounts.

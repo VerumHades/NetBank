@@ -2,10 +2,10 @@
 
 namespace NetBank;
 
-public interface IStorageInterface
+public interface IStorage
 {
     Task<AccountIdentifier> CreateAccount();
-    Task RemoveAccount();
+    Task RemoveAccount(AccountIdentifier account);
     
     Task Deposit(AccountIdentifier account, Amount amount);
     Task Withdraw(AccountIdentifier account, Amount amount);
