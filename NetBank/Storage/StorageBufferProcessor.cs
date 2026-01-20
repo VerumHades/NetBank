@@ -4,7 +4,7 @@ using NetBank.Types;
 
 namespace NetBank.Storage;
 
-public class StorageBufferProcessor : IProcessor<IReadOnlyStorageCapture>
+public class StorageBufferProcessor : IProcessor<StorageCaptureBuffer>
 {
     private readonly IStorageStrategy _storageStrategy;
     private readonly Cache<AccountIdentifier, Amount> _cache;
@@ -15,7 +15,7 @@ public class StorageBufferProcessor : IProcessor<IReadOnlyStorageCapture>
         _cache = new Cache<AccountIdentifier, Amount>(100, new LruEvictionPolicy<AccountIdentifier>());
     }
 
-    public async Task Flush(IReadOnlyStorageCapture capture)
+    public async Task Flush(StorageCaptureBuffer capture)
     {
         await PrefetchAccountsIntoCache(capture.TouchedAccounts);
         
@@ -149,4 +149,5 @@ public class StorageBufferProcessor : IProcessor<IReadOnlyStorageCapture>
 
     private static ModuleException CreateException(ErrorOrigin origin, string message) =>
         new(new ModuleErrorIdentifier(Module.StorageProcessor), origin, message);
+    
 }

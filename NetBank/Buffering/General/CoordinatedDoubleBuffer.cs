@@ -1,17 +1,17 @@
 ﻿namespace NetBank.Buffering.General;
 
-public class SynchronizationCaptureBuffer<T> where T : ICaptureBuffer
+public class CoordinatedDoubleBuffer<T> where T : ICaptureBuffer
 {
     private readonly DoubleBuffer<T> _buffer;
     private readonly IProcessor<T> _processor;
+    public T Buffer => _buffer.Front;
 
-    public SynchronizationCaptureBuffer(IFactory<T> factory, IProcessor<T> processor, ICaptureObserver<T> observer)
+    public CoordinatedDoubleBuffer(IFactory<T> factory, IProcessor<T> processor, ICaptureObserverFactory<T> observerFactory)
     {
         _buffer = new DoubleBuffer<T>(factory);
         _processor = processor;
         
-        observer.OnShouldSwap = Swap;
-        observer.SetBuffer(_buffer);
+        observerFactory.Create(_buffer, Swap);
     }
 
     private async Task Swap()
