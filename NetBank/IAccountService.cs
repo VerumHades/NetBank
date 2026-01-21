@@ -2,7 +2,7 @@
 
 namespace NetBank;
 
-public interface IStorage
+public interface IAccountService
 {
     Task<AccountIdentifier> CreateAccount();
     Task RemoveAccount(AccountIdentifier account);

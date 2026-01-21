@@ -1,4 +1,4 @@
-﻿namespace NetBank.Buffering.General;
+﻿namespace NetBank.Buffering;
 
 public class DoubleBuffer<T>
 {

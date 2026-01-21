@@ -1,11 +1,11 @@
-﻿using NetBank.Buffering.General;
+﻿using NetBank.Buffering;
 using NetBank.ErrorHandling;
 using NetBank.Structures;
 using NetBank.Types;
 
 namespace NetBank.Storage;
 
-public class StorageCaptureBuffer : IStorage, ICaptureBuffer, IReadOnlyStorageCapture
+public class AccountServiceCaptureBuffer : IAccountService, ICaptureBuffer, IReadOnlyStorageCapture
 {
     private readonly SequenceReadSet<AccountIdentifier> _touchedAccounts = [];
     private readonly List<TaskCompletionSource<AccountIdentifier>> _creationOperations = [];
@@ -26,6 +26,15 @@ public class StorageCaptureBuffer : IStorage, ICaptureBuffer, IReadOnlyStorageCa
     public IReadOnlyList<TaskCompletionSource<int>> ClientNumberRequests => _clientNumberRequests;
 
     public Action? NewClientListener { get; set; }
+
+    public bool HasPending => 
+        _creationOperations.Count > 0 ||
+        _depositOperations.Count > 0 ||
+        _withdrawOperations.Count > 0 ||
+        _removeOperations.Count > 0 ||
+        _balanceRequests.Count > 0 ||
+        _bankTotalRequests.Count > 0 ||
+        _clientNumberRequests.Count > 0;
 
     public void Clear()
     {
@@ -55,7 +64,6 @@ public class StorageCaptureBuffer : IStorage, ICaptureBuffer, IReadOnlyStorageCa
     public Task<AccountIdentifier> CreateAccount() => Deferred<AccountIdentifier>(tcs => 
     {
         _creationOperations.Add(tcs);
-        NewClientListener?.Invoke();
     });
 
     public Task RemoveAccount(AccountIdentifier account) => Deferred(tcs => 

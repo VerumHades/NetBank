@@ -1,23 +1,24 @@
-﻿using NetBank.Buffering.General;
+﻿using NetBank.Buffering;
 using NetBank.Storage;
+using NetBank.Storage.Strategies;
 
 namespace NetBank;
 
 class Program
 {
-    public class BufferFactory: IFactory<StorageCaptureBuffer>
+    private class BufferFactory: IFactory<AccountServiceCaptureBuffer>
     {
-        public StorageCaptureBuffer Create()
+        public AccountServiceCaptureBuffer Create()
         {
-            return new StorageCaptureBuffer();
+            return new AccountServiceCaptureBuffer();
         }
     }
 
-    public class ObserverFactory : ICaptureObserverFactory<StorageCaptureBuffer>
+    private class ObserverFactory : ICaptureObserverFactory<AccountServiceCaptureBuffer>
     {
-        public void Create(DoubleBuffer<StorageCaptureBuffer> buffer, Func<Task> OnShouldSwap)
+        public IDisposable Create(DoubleBuffer<AccountServiceCaptureBuffer> buffer, Func<Task<bool>> onShouldSwap)
         {
-            new TimedBufferObserver<StorageCaptureBuffer>(OnShouldSwap, buffer);
+            return new TimedBufferObserver<AccountServiceCaptureBuffer>(onShouldSwap, buffer);
         }
     }
     static async Task Main(string[] args)
@@ -28,7 +29,7 @@ class Program
         var inmemStorage = new InMemoryStorageStrategy();
         var processor = new StorageBufferProcessor(inmemStorage);
         
-        var buffer = new CoordinatedDoubleBuffer<StorageCaptureBuffer>(bufferFactory, processor, observerFactory);
+        var buffer = new CoordinatedDoubleBuffer<AccountServiceCaptureBuffer>(bufferFactory, processor, observerFactory);
 
         var account = await buffer.Buffer.CreateAccount();
         var total = await buffer.Buffer.BankTotal();

@@ -2,5 +2,5 @@
 
 public interface IStorageProvider
 {
-    IStorage GetStorage();
+    IAccountService GetStorage();
 }
