@@ -1,4 +1,4 @@
-﻿using NetBank.Parsing;
+﻿using NetBank.Infrastructure.Parsing;
 using NetBank.Types;
 
 namespace UnitTests;

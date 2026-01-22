@@ -1,4 +1,4 @@
-﻿namespace NetBank.ErrorHandling;
+﻿namespace NetBank.Infrastructure.ErrorHandling;
 
 /// <summary>
 /// Exception that carries a module-specific error identifier and origin classification.

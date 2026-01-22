@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using NetBank.Types;
 
-namespace NetBank.Storage.Strategies;
+namespace NetBank.Infrastructure.Storage.Strategies;
 
 public class InMemoryStorageStrategy : IStorageStrategy
 {

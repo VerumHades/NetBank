@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace NetBank.Caching;
+﻿namespace NetBank.Infrastructure.Caching;
 
 /// <summary>
 /// Least-recently-used eviction policy.

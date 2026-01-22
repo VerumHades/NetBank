@@ -1,4 +1,4 @@
-﻿namespace NetBank.ErrorHandling;
+﻿namespace NetBank.Infrastructure.ErrorHandling;
 
 public enum Module
 {

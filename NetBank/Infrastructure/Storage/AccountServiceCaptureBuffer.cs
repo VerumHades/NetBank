@@ -1,9 +1,9 @@
-﻿using NetBank.Buffering;
-using NetBank.ErrorHandling;
-using NetBank.Structures;
+﻿using NetBank.Infrastructure.Buffering;
+using NetBank.Infrastructure.ErrorHandling;
+using NetBank.Infrastructure.Structures;
 using NetBank.Types;
 
-namespace NetBank.Storage;
+namespace NetBank.Infrastructure.Storage;
 
 public class AccountServiceCaptureBuffer : IAccountService, ICaptureBuffer, IReadOnlyStorageCapture
 {

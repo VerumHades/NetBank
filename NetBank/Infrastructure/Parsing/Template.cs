@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using System.Reflection;
 
-namespace NetBank.Parsing;
+namespace NetBank.Infrastructure.Parsing;
 
 public class Template<T> where T : new()
 {

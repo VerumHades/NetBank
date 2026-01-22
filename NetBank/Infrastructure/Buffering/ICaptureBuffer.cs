@@ -1,4 +1,4 @@
-﻿namespace NetBank.Buffering;
+﻿namespace NetBank.Infrastructure.Buffering;
 
 public  interface ICaptureBuffer
 {

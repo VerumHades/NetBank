@@ -1,20 +1,21 @@
-﻿using NetBank.Buffering;
+﻿using NetBank.Infrastructure.Buffering;
 
-namespace NetBank.Storage;
+namespace NetBank.Infrastructure.Storage;
 
 public class TimedBufferObserver<T> : IDisposable where T: class, ICaptureBuffer
 {
     private readonly Func<Task<bool>> _onShouldSwap;
     private readonly DoubleBuffer<T> _buffer;
-    private readonly TimeSpan _swapTimeout = TimeSpan.FromMilliseconds(150);
+    private readonly TimeSpan _swapTimeout;
     
     private CancellationTokenSource? _timerCancellation;
     private readonly object _lock = new();
 
-    public TimedBufferObserver(Func<Task<bool>> onShouldSwap, DoubleBuffer<T> buffer)
+    public TimedBufferObserver(Func<Task<bool>> onShouldSwap, DoubleBuffer<T> buffer, TimeSpan? swapTimeout = null)
     {
         _onShouldSwap = onShouldSwap;
         _buffer = buffer;
+        _swapTimeout = swapTimeout ?? TimeSpan.FromMilliseconds(150);
 
         _buffer.Front.NewClientListener = OnNewClientDetected;
         _buffer.Back.NewClientListener = OnNewClientDetected;

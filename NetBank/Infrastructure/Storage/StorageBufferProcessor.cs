@@ -1,8 +1,8 @@
-﻿using NetBank.Caching;
-using NetBank.ErrorHandling;
+﻿using NetBank.Infrastructure.Caching;
+using NetBank.Infrastructure.ErrorHandling;
 using NetBank.Types;
 
-namespace NetBank.Storage;
+namespace NetBank.Infrastructure.Storage;
 
 public class StorageBufferProcessor : IProcessor<AccountServiceCaptureBuffer>
 {

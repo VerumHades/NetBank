@@ -1,20 +1,19 @@
-﻿namespace NetBank.Buffering;
+﻿using Microsoft.Extensions.Logging;
+using NetBank.Infrastructure.ErrorHandling;
 
-public class CoordinatedDoubleBuffer<T> : IDisposable where T : ICaptureBuffer
+namespace NetBank.Infrastructure.Buffering;
+using Microsoft.Extensions.Logging.Abstractions; // Essential for NullLogger
+
+public class CoordinatedDoubleBuffer<T> : DoubleBuffer<T>, IAsyncDisposable where T : ICaptureBuffer
 {
-    private readonly DoubleBuffer<T> _buffer;
     private readonly IProcessor<T> _processor;
     private readonly SemaphoreSlim _swapLock = new(1, 1);
-    private readonly IDisposable _observer; 
-
-    public T Buffer => _buffer.Front;
-
-    public CoordinatedDoubleBuffer(IFactory<T> factory, IProcessor<T> processor, ICaptureObserverFactory<T> observerFactory)
+    
+    public CoordinatedDoubleBuffer(
+        IFactory<T> factory, 
+        IProcessor<T> processor): base(factory)
     {
-        _buffer = new DoubleBuffer<T>(factory);
         _processor = processor;
-        
-        _observer = observerFactory.Create(_buffer, TrySwap);
     }
 
     public async Task<bool> TrySwap()
@@ -23,13 +22,9 @@ public class CoordinatedDoubleBuffer<T> : IDisposable where T : ICaptureBuffer
 
         try
         {
-            _buffer.Swap(); 
-            await _processor.Flush(_buffer.Back);
+            Swap(); 
+            await _processor.Flush(Back);
             return true; 
-        }
-        catch
-        {
-            return false;
         }
         finally
         {
@@ -37,13 +32,35 @@ public class CoordinatedDoubleBuffer<T> : IDisposable where T : ICaptureBuffer
         }
     }
 
-    public void Dispose()
+    public async ValueTask DisposeAsync()
     {
-        _observer?.Dispose(); 
-        
-        _swapLock.Dispose();
+        using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
 
-        _buffer.Back.Clear();
-        _buffer.Front.Clear();
+        try
+        {
+            await _swapLock.WaitAsync(cts.Token);
+        
+            try
+            {
+                Back?.Clear();
+                Front?.Clear();
+            }
+            finally
+            {
+                _swapLock.Release();
+            }
+        }
+        catch (OperationCanceledException)
+        {
+            // Logic reached here because the timeout expired before Flush finished.
+            // We log this via the "Edge Logging" pattern we discussed earlier.
+            // _logger.LogWarning("Disposal timed out before buffer flush could complete.");
+        }
+        finally
+        {
+            _swapLock.Dispose();
+        }
+
+        GC.SuppressFinalize(this);
     }
 }

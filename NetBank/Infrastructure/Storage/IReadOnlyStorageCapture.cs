@@ -1,7 +1,7 @@
-﻿using NetBank.Structures;
+﻿using NetBank.Infrastructure.Structures;
 using NetBank.Types;
 
-namespace NetBank.Storage;
+namespace NetBank.Infrastructure.Storage;
 
 public interface IReadOnlyStorageCapture
 {

@@ -1,6 +1,6 @@
 ﻿using System.Collections;
 
-namespace NetBank.Structures;
+namespace NetBank.Infrastructure.Structures;
 
 public class SequenceReadSet<T>: IEnumerable<T>
 {

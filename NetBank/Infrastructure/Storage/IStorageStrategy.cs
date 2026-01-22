@@ -1,6 +1,6 @@
 ﻿using NetBank.Types;
 
-namespace NetBank.Storage;
+namespace NetBank.Infrastructure.Storage;
 
 /// <summary>
 /// Defines the storage strategy for accounts and balances.
